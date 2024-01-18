@@ -4,13 +4,14 @@ version: '3.7'
 services:
 
   postgres:
-    image: postgres:14-alpine
+    image: mysql:8.0.18
     ports:
       - '3306:3306'
     volumes:
-      - .data:/var/lib/postgresql/data
+      - .data:/var/lib/mysql
     environment:
-      POSTGRES_DB=db
-      POSTGRES_USER=student
-      POSTGRES_PASSWORD=KGPRKS
+      _ MYSQL_RANDOM_ROOT_PASSWORD=yes
+      _ MYSQL_DATABASE=app
+      _ MYSQL_USER=app
+      _ MYSQL_PASSWORD=9mREsvXDs9Gk89Ef
 
