@@ -13,5 +13,5 @@ services:
       _ MYSQL_RANDOM_ROOT_PASSWORD=yes
       _ MYSQL_DATABASE=app
       _ MYSQL_USER=app
-      _ MYSQL_PASSWORD=9mREsvXDs9Gk89Ef
+      _ MYSQL_PASSWORD=pass
 
