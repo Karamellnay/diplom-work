@@ -23,7 +23,7 @@ services:
       - POSTGRES_USER=app
       - POSTGRES_PASSWORD=pass
   java-app:
-    build: ./image
+    build: ./gate-simulator
     image: java-app:1.6
     ports:
       - '9999:9999'
