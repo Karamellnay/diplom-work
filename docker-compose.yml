@@ -1,17 +1,29 @@
-
 version: '3.7'
-
 services:
-
-  postgres:
+  mysql:
     image: mysql:8.0.18
+    restart: always
     ports:
       - '3306:3306'
     volumes:
-      - .data:/var/lib/mysql
+      - ./schema:/docker-entrypoint-initdb.d
     environment:
-      _ MYSQL_RANDOM_ROOT_PASSWORD=yes
-      _ MYSQL_DATABASE=app
-      _ MYSQL_USER=app
-      _ MYSQL_PASSWORD=pass
-
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=pass
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - '5432:5432'
+    volumes:
+      - .data:/var/lib/postgres/data
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=pass
+  java-app:
+    build: ./image
+    image: java-app:1.6
+    ports:
+      - '9999:9999'
