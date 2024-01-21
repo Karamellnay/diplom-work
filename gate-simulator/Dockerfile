@@ -1,5 +1,6 @@
-FROM openjdk:8-slim
+FROM node:erbium-alpine3.12
 WORKDIR /opt/app
-COPY aqa-shop.jar .
-CMD ["java", "-jar", "aqa-shop.jar"]
+COPY . .
+RUN npm install
+CMD ["npm", "start"]
 EXPOSE 9999
