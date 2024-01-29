@@ -6,7 +6,8 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import ru.netology.diplom.data.DataHelper;
-import ru.netology.diplom.page.DashboardPage;
+import ru.netology.diplom.page.CreditPage;
+import ru.netology.diplom.page.DebitPage;
 import ru.netology.diplom.page.LoginPage;
 
 import java.time.Duration;
@@ -16,11 +17,13 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
-import static ru.netology.diplom.data.SQLHelper.cleanDatabase;
+
 
 public class BuyingTourTest {
     LoginPage loginPage;
-    DashboardPage dashboardPage;
+    DebitPage debitPage;
+    CreditPage creditPage;
+
 
     @BeforeAll
     static void setUpAll() {
@@ -34,12 +37,12 @@ public class BuyingTourTest {
 
     @BeforeEach
     void setup() {
-       LoginPage = open("http://localhost:8080", LoginPage.class);
+        open("http://localhost:8080");
     }
 
 
     @Test
-    @DisplayName("Purchasing a tour using a debit card with valid data")
+   @DisplayName("Purchasing a tour using a debit card with valid data")
     void purchasingTourUsingDebitCardWithValidData() {
         String cardNumber = DataHelper.generateCardNumber();
         String month = DataHelper.generateMonth();
@@ -83,8 +86,8 @@ public class BuyingTourTest {
     @Test
     @DisplayName("Purchasing a tour using a debit card with valid data")
     void purchasingTourUsingDebitCardWithValidData2() {
-        $(byText("Купить")).click();
+        loginPage.debitBuy();
         var cardIhfo = DataHelper.generateRandom();
-        var dashboardPage = loginPage.validCard(cardIhfo);
+        var debitPage = DebitPage.validCard(cardIhfo);
     }
 }

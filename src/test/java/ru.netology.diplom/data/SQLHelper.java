@@ -18,9 +18,6 @@ public class SQLHelper {
         return DriverManager.getConnection(System.getProperty("db.url"), "app", "pass");
     }
 
-    private static Connection getConnPostgres() throws SQLException {
-        return DriverManager.getConnection(System.getProperty("db.url1"), "app", "pass");
-    }
 
     @SneakyThrows
     public static DataHelper.StatusCard getStatusCard() {
