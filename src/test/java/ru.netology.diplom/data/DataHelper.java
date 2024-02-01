@@ -51,5 +51,9 @@ public class DataHelper {
         String year;
         String cvc;
     }
+    @Value
+    public static class StatusCard {
+        String statusCard;
+    }
 
 }

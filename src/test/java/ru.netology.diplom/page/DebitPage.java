@@ -20,7 +20,7 @@ public class DebitPage {
     public void verifyErrorNotification(String expectedText) {
         errorNotification.shouldHave(exactText(expectedText)).shouldBe(visible);
     }
-    public DebitPage validCard(DataHelper.CardInfo cardInfo) {
+    public void validCard(DataHelper.CardInfo cardInfo) {
         cardNumber.setValue(cardInfo.getCardNumber());
         month.setValue(cardInfo.getMonth());
         year.setValue(cardInfo.getYear());

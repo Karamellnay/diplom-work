@@ -13,11 +13,13 @@ public class LoginPage {
     private final SelenideElement debit = $(byText("Купить"));
     private final SelenideElement credit = $(byText("Купить в кредит"));
 
-    public void debitBuy() {
+    public DebitPage debitBuy() {
         debit.click();
+        return new DebitPage();
     }
-    public void creditByu() {
+    public CreditPage creditByu() {
         credit.click();
+        return new CreditPage();
     }
 
 }
