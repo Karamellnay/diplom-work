@@ -27,4 +27,5 @@ public class DebitPage {
         name.setValue(cardInfo.getName());
         cvc.setValue(cardInfo.getCvc());
     }
+
 }

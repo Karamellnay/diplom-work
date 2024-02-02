@@ -23,7 +23,7 @@ public class CreditPage {
     public void verifyErrorNotification(String expectedText) {
         errorNotification.shouldHave(exactText(expectedText)).shouldBe(visible);
     }
-    public void validCard(DataHelper.CardInfo cardInfo) {
+    public void validCardCredit(DataHelper.CardInfo cardInfo) {
         cardNumber.setValue(cardInfo.getCardNumber());
         month.setValue(cardInfo.getMonth());
         year.setValue(cardInfo.getYear());

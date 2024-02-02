@@ -19,5 +19,5 @@
 5. После чего на виртуальную машину был скопирован с GITHUB проект командой git clone с ссылкой на проект (https://github.com/Karamellnay/diplom-work.git).
 6. В терминале компьютера вводится команда для запуска контейнеров docker-compose up.
 7. В IntelliJ IDEA запускается джарник командой java -jar -Dspring.datasource.url=jdbc:mysql://185.119.57.164:3306/app aqa-shop.jar и командой java -jar -Dspring.datasource.url1=jdbc:postgresql://185.119.57.164:3306/app aqa-shop.jar.
-8. В консоли для запуска автотестов используется команда ./gradlew clean test.
+8. В консоли для запуска автотестов используется команда ./gradlew clean test -Ddb.url=jdbc:mysql://185.119.57.164:3306/app.
 

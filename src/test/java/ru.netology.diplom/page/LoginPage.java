@@ -17,7 +17,7 @@ public class LoginPage {
         debit.click();
         return new DebitPage();
     }
-    public CreditPage creditByu() {
+    public CreditPage creditBuy() {
         credit.click();
         return new CreditPage();
     }
