@@ -19,7 +19,9 @@ public class CreditPage {
     private final SelenideElement name = $(byText("Владелец")).parent()
             .find(By.tagName("input"));
     private final SelenideElement cvc = $(".input__control[type='text'][placeholder='999']");
-    private final SelenideElement errorNotification = $("input__sub");
+    private final SelenideElement press = $(byText("Продолжить"));
+    private final SelenideElement errorNotification = $(".input__sub");
+    private final SelenideElement bank = $(".notification__content");
     public void verifyErrorNotification(String expectedText) {
         errorNotification.shouldHave(exactText(expectedText)).shouldBe(visible);
     }
@@ -29,6 +31,10 @@ public class CreditPage {
         year.setValue(cardInfo.getYear());
         name.setValue(cardInfo.getName());
         cvc.setValue(cardInfo.getCvc());
+        press.click();
+    }
+    public void answerBankCredit(String expectedText) {
+        bank.shouldBe(Condition.visible, Duration.ofSeconds(15)).shouldHave(Condition.exactText(expectedText));
     }
 
 

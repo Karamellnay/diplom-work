@@ -2,6 +2,7 @@ package ru.netology.diplom.test;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import dev.failsafe.internal.util.Assert;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
@@ -33,52 +34,42 @@ public class BuyingTourTest {
         loginPage = open("http://localhost:8080", LoginPage.class);
     }
     @Test
-    @DisplayName("Tour using a debit card with valid data")
-    void tourUsingDebitCardWithValidData37() {
+    @DisplayName("Tour using a debit card with accurate card")
+    void tourUsingDebitCardWithAccurateCard37() {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateRandom();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".notification__content")
-        .shouldBe(Condition.visible, Duration.ofSeconds(15))
-        .shouldHave(Condition.exactText("Операция одобрена Банком."));
-        var statusCard = SQLHelper.getStatusCard();
+        debitPage.answerBank("Ошибка! Банк отказал в проведении операции.");
     }
     @Test
-    @DisplayName("Tour using a credit card with valid data")
-    void tourUsingCreditCardWithValidData38() {
+    @DisplayName("Tour using a credit card with accurate card")
+    void tourUsingCreditCardWithAccurateCard38() {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateRandom();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".notification__content")
-                .shouldBe(Condition.visible, Duration.ofSeconds(15))
-                .shouldHave(Condition.exactText("Операция одобрена Банком."));
-        var statusCard = SQLHelper.getStatusCard();
+        creditPage.answerBankCredit("Ошибка! Банк отказал в проведении операции.");
     }
     @Test
-    @DisplayName("Tour using a debit card with accurate card")
-    void tourUsingDebitCardWithAccurateCard1() {
+    @DisplayName("Tour using a debit card with valid data")
+    void tourUsingDebitCardWithValidData1() {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateAccurateCard();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".notification__content")
-                .shouldBe(Condition.visible, Duration.ofSeconds(15))
-                .shouldHave(Condition.exactText("Операция одобрена Банком."));
+        debitPage.answerBank("Операция одобрена Банком.");
         var statusCard = SQLHelper.getStatusCard();
+        String expectedStatus = "APPROVED";
+        Assertions.assertEquals(expectedStatus, statusCard);
     }
     @Test
-    @DisplayName("Tour using a credit card with accurate Card")
-    void tourUsingCreditCardWithAccurateCard2() {
+    @DisplayName("Tour using a credit card with valid data")
+    void tourUsingCreditCardWithValidData2() {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateAccurateCard();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".notification__content")
-                .shouldBe(Condition.visible, Duration.ofSeconds(15))
-                .shouldHave(Condition.exactText("Операция одобрена Банком."));
-        var statusCard = SQLHelper.getStatusCard();
+        creditPage.answerBankCredit("Операция одобрена Банком.");
+        var statusCard = SQLHelper.getStatusCardCredit();
+        String expectedStatus = "APPROVED";
+        Assertions.assertEquals(expectedStatus, statusCard);
     }
     @Test
     @DisplayName("Tour using a debit card with null card")
@@ -86,10 +77,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNullCard();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        debitPage.verifyErrorNotification("Неверный формат");
 
     }
     @Test
@@ -98,10 +86,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNullCard();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with rejected card")
@@ -109,11 +94,10 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateRejectedCard();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".notification__content")
-                .shouldBe(Condition.visible, Duration.ofSeconds(15))
-                .shouldHave(Condition.exactText("Ошибка! Банк отказал в проведении операции."));
+        debitPage.answerBank("Ошибка! Банк отказал в проведении операции.");
         var statusCard = SQLHelper.getStatusCard();
+        String expectedStatus = "DECLINED";
+        Assertions.assertEquals(expectedStatus, statusCard);
     }
     @Test
     @DisplayName("Tour using a credit card with rejected Card")
@@ -121,11 +105,10 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateRejectedCard();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".notification__content")
-                .shouldBe(Condition.visible, Duration.ofSeconds(15))
-                .shouldHave(Condition.exactText("Ошибка! Банк отказал в проведении операции."));
-        var statusCard = SQLHelper.getStatusCard();
+        creditPage.answerBankCredit("Ошибка! Банк отказал в проведении операции.");
+        var statusCard = SQLHelper.getStatusCardCredit();
+        String expectedStatus = "DECLINED";
+        Assertions.assertEquals(expectedStatus, statusCard);
     }
     @Test
     @DisplayName("Tour using a debit card with null year")
@@ -133,11 +116,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNullYear();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Истёк срок действия карты"));
-
+        debitPage.verifyErrorNotification("Истёк срок действия карты");
     }
     @Test
     @DisplayName("Tour using a credit card with null year")
@@ -145,10 +124,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNullYear();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Истёк срок действия карты"));
+        creditPage.verifyErrorNotification("Истёк срок действия карты");
     }
     @Test
     @DisplayName("Tour using a debit card with null cvc")
@@ -156,11 +132,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNullCvc();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with null cvc")
@@ -168,10 +140,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNullCvc();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with cvc")
@@ -179,11 +148,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateCvcTwo();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with cvc")
@@ -191,10 +156,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateCvcTwo();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with null month")
@@ -202,11 +164,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNullMonth();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверно указан срок действия карты"));
-
+        debitPage.verifyErrorNotification("Неверно указан срок действия карты");
     }
     @Test
     @DisplayName("Tour using a credit card with null month")
@@ -214,10 +172,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNullMonth();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверно указан срок действия карты"));
+        creditPage.verifyErrorNotification("Неверно указан срок действия карты");
     }
     @Test
     @DisplayName("Tour using a debit card with name")
@@ -225,11 +180,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateSymbolsName();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with name")
@@ -237,10 +188,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateSymbolsName();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with cyrillic name")
@@ -248,11 +196,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateCyrillicName();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with cyrillic name")
@@ -260,10 +204,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateCyrillicName();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with no month")
@@ -271,11 +212,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNoMonth();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверно указан срок действия карты"));
-
+        debitPage.verifyErrorNotification("Неверно указан срок действия карты");
     }
     @Test
     @DisplayName("Tour using a credit card with no month")
@@ -283,10 +220,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNoMonth();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверно указан срок действия карты"));
+        creditPage.verifyErrorNotification("Неверно указан срок действия карты");
     }
     @Test
     @DisplayName("Tour using a debit card with no year")
@@ -294,11 +228,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNoYear();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Истёк срок действия карты"));
-
+        debitPage.verifyErrorNotification("Истёк срок действия карты");
     }
     @Test
     @DisplayName("Tour using a credit card with no year")
@@ -306,10 +236,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNoYear();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Истёк срок действия карты"));
+        creditPage.verifyErrorNotification("Истёк срок действия карты");
     }
     @Test
     @DisplayName("Tour using a debit card with numbers name")
@@ -317,11 +244,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNumbersName();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with numbers name")
@@ -329,10 +252,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNumbersName();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with no card")
@@ -340,11 +260,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNoCard();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with no Card")
@@ -352,10 +268,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNoCard();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with no name")
@@ -363,11 +276,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNoName();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Поле обязательно для заполнения"));
-
+        debitPage.verifyErrorNotification("Поле обязательно для заполнения");
     }
     @Test
     @DisplayName("Tour using a credit card with no name")
@@ -375,10 +284,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateNoName();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+        creditPage.verifyErrorNotification("Поле обязательно для заполнения");
     }
     @Test
     @DisplayName("Tour using a debit card with empty month")
@@ -386,11 +292,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateEmptyMonth();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with empty month")
@@ -398,10 +300,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateEmptyMonth();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with empty year")
@@ -409,11 +308,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateEmptyYear();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with empty year")
@@ -421,10 +316,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateEmptyYear();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with empty cvc")
@@ -432,10 +324,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateEmptyCvc();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        debitPage.verifyErrorNotification("Неверный формат");
 
     }
     @Test
@@ -444,10 +333,7 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateEmptyCvc();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a debit card with empty")
@@ -455,11 +341,7 @@ public class BuyingTourTest {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateEmpty();
         debitPage.validCard(validCard);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
-
+        debitPage.verifyErrorNotification("Неверный формат");
     }
     @Test
     @DisplayName("Tour using a credit card with empty")
@@ -467,9 +349,6 @@ public class BuyingTourTest {
         var creditPage = loginPage.creditBuy();
         var validCardCredit = DataHelper.generateEmpty();
         creditPage.validCardCredit(validCardCredit);
-        $(byText("Продолжить")).click();
-        $(".input__sub")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.exactText("Неверный формат"));
+        creditPage.verifyErrorNotification("Неверный формат");
     }
 }

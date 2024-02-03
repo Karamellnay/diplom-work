@@ -27,5 +27,12 @@ public class SQLHelper {
         var status = QUERY_RUNNER.query(conn, statusSQL, new ScalarHandler<String>());
         return new DataHelper.StatusCard(status);
     }
+    @SneakyThrows
+    public static DataHelper.StatusCardCredit getStatusCardCredit() {
+        var statusSQL = "SELECT status FROM credit_request_entity ORDER BY created DESC LIMIT 1";
+        var conn = getConn();
+        var statusCredit = QUERY_RUNNER.query(conn, statusSQL, new ScalarHandler<String>());
+        return new DataHelper.StatusCardCredit(statusCredit);
+    }
 
 }
