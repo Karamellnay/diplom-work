@@ -78,7 +78,6 @@ public class BuyingTourTest {
         var validCard = DataHelper.generateNullCard();
         debitPage.validCard(validCard);
         debitPage.verifyErrorNotification("Неверный формат");
-
     }
     @Test
     @DisplayName("Tour using a credit card with null Card")
@@ -208,7 +207,7 @@ public class BuyingTourTest {
     }
     @Test
     @DisplayName("Tour using a debit card with no month")
-    void tourUsingDebitCardWithNoMonth15() {
+    void tourUsingDebitCardWithNoMonth5() {
         var debitPage = loginPage.debitBuy();
         var validCard = DataHelper.generateNoMonth();
         debitPage.validCard(validCard);
