@@ -57,8 +57,9 @@ public class BuyingTourTest {
         debitPage.validCard(validCard);
         debitPage.answerBank("Операция одобрена Банком.");
         var statusCard = SQLHelper.getStatusCard();
+        String status = statusCard.getStatusCard();
         String expectedStatus = "APPROVED";
-        Assertions.assertEquals(expectedStatus, statusCard);
+        Assertions.assertEquals(expectedStatus, status);
     }
     @Test
     @DisplayName("Tour using a credit card with valid data")
@@ -68,8 +69,9 @@ public class BuyingTourTest {
         creditPage.validCardCredit(validCardCredit);
         creditPage.answerBankCredit("Операция одобрена Банком.");
         var statusCard = SQLHelper.getStatusCardCredit();
+        String status = statusCard.getStatusCardCredit();
         String expectedStatus = "APPROVED";
-        Assertions.assertEquals(expectedStatus, statusCard);
+        Assertions.assertEquals(expectedStatus, status);
     }
     @Test
     @DisplayName("Tour using a debit card with null card")
@@ -95,8 +97,9 @@ public class BuyingTourTest {
         debitPage.validCard(validCard);
         debitPage.answerBank("Ошибка! Банк отказал в проведении операции.");
         var statusCard = SQLHelper.getStatusCard();
+        String status = statusCard.getStatusCard();
         String expectedStatus = "DECLINED";
-        Assertions.assertEquals(expectedStatus, statusCard);
+        Assertions.assertEquals(expectedStatus, status);
     }
     @Test
     @DisplayName("Tour using a credit card with rejected Card")
@@ -106,8 +109,9 @@ public class BuyingTourTest {
         creditPage.validCardCredit(validCardCredit);
         creditPage.answerBankCredit("Ошибка! Банк отказал в проведении операции.");
         var statusCard = SQLHelper.getStatusCardCredit();
+        String status = statusCard.getStatusCardCredit();
         String expectedStatus = "DECLINED";
-        Assertions.assertEquals(expectedStatus, statusCard);
+        Assertions.assertEquals(expectedStatus, status);
     }
     @Test
     @DisplayName("Tour using a debit card with null year")
