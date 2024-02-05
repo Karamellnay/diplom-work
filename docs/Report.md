@@ -12,11 +12,9 @@
 
 В результате тестирования успешно пройдены 22 тест-кейсов, 16 тест-кейсов упали из-за найденных багов, по найденным багам были заведены issues.
 
-![alur.png](..%2F..%2F..%2Falur.png)
-
-![alur2.png](..%2F..%2F..%2Falur2.png)
-
-![alur3.png](..%2F..%2F..%2Falur3.png)
+![alur](https://github.com/Karamellnay/diplom-work/assets/144268509/7959bb79-721e-4756-b4e9-2e3f6a066dac)
+![alur2](https://github.com/Karamellnay/diplom-work/assets/144268509/ca4dfc1b-d8bf-4bfe-872d-48f5119f7282)
+![alur3](https://github.com/Karamellnay/diplom-work/assets/144268509/82228c52-2af3-4045-8a91-7b37e9d3434b)
 
 4. Общие рекомендации
 
